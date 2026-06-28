@@ -14,7 +14,7 @@
  *   - vector-grep-rrf-fusion-without-graph (EXT-3: future)
  *
  * Usage:
- *   bun eval/runner/multi-adapter.ts [--adapter grep-only|gbrain|all]
+ *   bun eval/runner/multi-adapter.ts [--adapter grep-only|gbrain|engram-search|engram-query|all]
  *   bun eval/runner/multi-adapter.ts --json
  */
 
@@ -25,6 +25,7 @@ import { runExtract } from 'gbrain/extract';
 import { RipgrepBm25Adapter } from './adapters/grep-only.ts';
 import { VectorOnlyAdapter } from './adapters/vector.ts';
 import { HybridNoGraphAdapter } from './adapters/vector-grep-rrf-fusion.ts';
+import { createEngramQuery, createEngramSearch } from './adapters/engram-cli.ts';
 import type { Adapter, Page, Query, RankedDoc } from './types.ts';
 import { precisionAtK, recallAtK, sanitizePage, sanitizeQuery } from './types.ts';
 
@@ -480,15 +481,25 @@ async function main() {
     log(`Relational queries: ${queries.length}\n`);
   }
 
-  const allAdapters: Adapter[] = [
+  const builtInAdapters: Adapter[] = [
     new GbrainAfterAdapter(),
     new HybridNoGraphAdapter(),
     new RipgrepBm25Adapter(),
     new VectorOnlyAdapter(),
   ];
-  const adapters = only ? allAdapters.filter(a => a.name === only) : allAdapters;
+  const externalAdapters: Adapter[] = [
+    createEngramSearch(),
+    createEngramQuery(),
+  ];
+  const selectableAdapters = [...builtInAdapters, ...externalAdapters];
+  const allAdapters = process.env.BRAINBENCH_INCLUDE_EXTERNAL === '1'
+    ? selectableAdapters
+    : builtInAdapters;
+  const adapters = only && only !== 'all'
+    ? selectableAdapters.filter(a => a.name === only)
+    : allAdapters;
   if (adapters.length === 0) {
-    console.error(`No adapter matches --adapter=${only}. Available: ${allAdapters.map(a => a.name).join(', ')}`);
+    console.error(`No adapter matches --adapter=${only}. Available: ${selectableAdapters.map(a => a.name).join(', ')}`);
     process.exit(1);
   }
 

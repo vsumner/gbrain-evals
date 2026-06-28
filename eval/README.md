@@ -106,6 +106,21 @@ See `CONTRIBUTING.md` for the adapter submission flow. Short version:
 4. `bun run eval:run:dev` to verify.
 5. Open a PR.
 
+The Engram CLI adapter is selectable but not part of the default `all` run,
+because it depends on an external `engram` binary. Point `ENGRAM_BIN` at a
+built Engram CLI and run it explicitly:
+
+```sh
+ENGRAM_BIN=/path/to/engram BRAINBENCH_N=1 \
+  bun eval/runner/multi-adapter.ts --adapter=engram-search --json
+```
+
+Use `--adapter=engram-query` to exercise Engram's hybrid query surface instead.
+Set `BRAINBENCH_INCLUDE_EXTERNAL=1` only when you intentionally want external
+adapters included in the default adapter set. `bun run typecheck:engram-adapter`
+typechecks this external adapter without requiring the whole repo's broader
+TypeScript surface to be clean.
+
 ### Path 3: Write Tier 5.5 externally-authored queries
 
 The T5.5 queries currently in the repo are AI-authored (`author:

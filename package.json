@@ -23,7 +23,8 @@
     "eval:brainbench:smoke": "BRAINBENCH_N=1 BRAINBENCH_CONCURRENCY=2 bun eval/runner/all.ts",
     "eval:brainbench:published": "BRAINBENCH_N=10 BRAINBENCH_CONCURRENCY=2 bun eval/runner/all.ts",
     "eval:cat6": "bun eval/runner/cat6-prose-scale.ts",
-    "eval:cat11": "bun eval/runner/cat11-multimodal.ts"
+    "eval:cat11": "bun eval/runner/cat11-multimodal.ts",
+    "typecheck:engram-adapter": "tsc --noEmit --ignoreConfig --pretty false --types bun --lib ESNext,DOM --target ESNext --module ESNext --moduleResolution bundler --allowImportingTsExtensions --strict --skipLibCheck eval/runner/types.ts eval/runner/adapters/engram-cli.ts eval/runner/adapters/engram-cli.test.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",
@@ -31,7 +32,8 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "pdf-parse": "^2.4.5"
+    "pdf-parse": "^2.4.5",
+    "typescript": "^6.0.3"
   },
   "keywords": [
     "gbrain",
