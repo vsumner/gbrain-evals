@@ -121,6 +121,16 @@ adapters included in the default adapter set. `bun run typecheck:engram-adapter`
 typechecks this external adapter without requiring the whole repo's broader
 TypeScript surface to be clean.
 
+For per-query Engram analysis, run the diagnostics driver:
+
+```sh
+ENGRAM_BIN=/path/to/engram bun run eval:engram:diagnostics
+```
+
+It runs `engram-search` and `engram-query` against the relational corpus and
+emits query-level misses, extras, and relation buckets so external score changes
+can be promoted into native fixtures.
+
 ### Path 3: Write Tier 5.5 externally-authored queries
 
 The T5.5 queries currently in the repo are AI-authored (`author:
